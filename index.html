@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador de Créditos - Educación Financiera</title>
+    <title>Simulador de Créditos</title>
     <style>
         * {
             margin: 0;
@@ -304,6 +304,32 @@
             display: block;
         }
 
+        .nav-links {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: #667eea;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .nav-btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+
         @media (max-width: 600px) {
             .container {
                 padding: 25px;
@@ -320,7 +346,7 @@
             input[type="number"],
             input[type="range"],
             select {
-                font-size: 16px; /* Previene zoom en iOS */
+                font-size: 16px;
             }
 
             table {
@@ -343,7 +369,6 @@
         <div id="alert" class="alert"></div>
 
         <form id="creditForm">
-            <!-- Monto del Crédito -->
             <div class="form-group">
                 <label for="amount">Monto del Crédito</label>
                 <div class="input-group">
@@ -363,7 +388,6 @@
                 </small>
             </div>
 
-            <!-- Tasa de Interés Anual -->
             <div class="form-group">
                 <label for="rate">
                     Tasa de Interés Anual
@@ -383,7 +407,6 @@
                 </div>
             </div>
 
-            <!-- Plazo -->
             <div class="form-group">
                 <label for="months">
                     Plazo
@@ -403,7 +426,6 @@
                 </div>
             </div>
 
-            <!-- Tipo de Amortización -->
             <div class="form-group">
                 <label for="amortizationType">Tipo de Amortización</label>
                 <select id="amortizationType">
@@ -416,7 +438,6 @@
                 </small>
             </div>
 
-            <!-- Botones -->
             <div class="button-group">
                 <button type="button" class="btn-calculate" onclick="calculateCredit()">
                     Calcular
@@ -427,7 +448,6 @@
             </div>
         </form>
 
-        <!-- Resultados -->
         <div id="results" style="display: none;">
             <div class="results">
                 <h2>Detalles de tu Crédito</h2>
@@ -488,10 +508,15 @@
                 </table>
             </div>
         </div>
+
+        <div class="nav-links">
+            <button class="nav-btn" onclick="window.location.href='joke-generator.html'">
+                😂 Generador de Chistes
+            </button>
+        </div>
     </div>
 
     <script>
-        // Actualizar valores de rango
         document.getElementById('rate').addEventListener('input', function() {
             document.getElementById('rateDisplay').textContent = this.value + '%';
         });
@@ -513,7 +538,6 @@
             document.getElementById('monthsDisplay').textContent = display;
         });
 
-        // Validar entrada de monto
         document.getElementById('amount').addEventListener('change', function() {
             if (this.value < 1000) {
                 this.value = 1000;
@@ -536,7 +560,6 @@
             const months = parseInt(document.getElementById('months').value);
             const amortizationType = document.getElementById('amortizationType').value;
 
-            // Validaciones
             if (!amount || amount < 1000) {
                 showAlert('Ingresa un monto válido (mínimo $1,000)', 'error');
                 return;
@@ -550,21 +573,17 @@
             const monthlyRate = annualRate / 100 / 12;
             let monthlyPayment, totalInterest, totalPayment;
 
-            // Calcular según tipo de amortización
             if (amortizationType === 'fixed') {
-                // Sistema Francés - Cuota Fija
                 monthlyPayment = (amount * monthlyRate * Math.pow(1 + monthlyRate, months)) / 
                                 (Math.pow(1 + monthlyRate, months) - 1);
                 totalPayment = monthlyPayment * months;
                 totalInterest = totalPayment - amount;
             } else {
-                // Sistema Alemán - Cuota Decreciente
-                monthlyPayment = amount / months; // Capital inicial
+                monthlyPayment = amount / months;
                 totalInterest = (amount * monthlyRate * (months + 1)) / 2;
                 totalPayment = amount + totalInterest;
             }
 
-            // Mostrar resultados
             document.getElementById('resultAmount').textContent = formatCurrency(amount);
             document.getElementById('resultRate').textContent = annualRate.toFixed(2) + '%';
             
@@ -585,7 +604,6 @@
 
             document.getElementById('results').style.display = 'block';
 
-            // Generar tabla de amortización
             generateAmortizationTable(amount, monthlyRate, months, amortizationType, monthlyPayment);
         }
 
@@ -594,7 +612,7 @@
             tbody.innerHTML = '';
 
             let balance = principal;
-            const maxRows = Math.min(months, 60); // Limitar a 60 filas para rendimiento
+            const maxRows = Math.min(months, 60);
 
             for (let i = 1; i <= maxRows; i++) {
                 const interest = balance * monthlyRate;
@@ -652,7 +670,6 @@
             document.getElementById('monthsDisplay').textContent = '12 meses';
         }
 
-        // Permitir Enter para calcular
         document.getElementById('creditForm').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
