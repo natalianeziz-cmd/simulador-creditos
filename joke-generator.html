@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Joke Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+            font-style: italic;
+        }
+
+        .joke-container {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-left: 5px solid #667eea;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .joke-container::before {
+            content: '"';
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            font-size: 60px;
+            color: rgba(102, 126, 234, 0.1);
+            font-weight: bold;
+        }
+
+        .joke-text {
+            font-size: 18px;
+            color: #333;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+            font-weight: 500;
+        }
+
+        .joke-type {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-top: 15px;
+            font-weight: 600;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #667eea;
+            font-size: 14px;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            display: inline-block;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            flex: 1;
+            min-width: 120px;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #d0d0d0;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .category-selector {
+            margin: 20px 0;
+        }
+
+        .category-selector label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #1565c0;
+            line-height: 1.6;
+        }
+
+        .error {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-size: 13px;
+            color: #c62828;
+            display: none;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .share-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .share-copy {
+            background: #4caf50;
+            color: white;
+        }
+
+        .share-copy:hover {
+            background: #45a049;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .joke-text {
+                font-size: 16px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>😂 Joke Generator</h1>
+            <p class="subtitle">Get random jokes to brighten your day</p>
+        </header>
+
+        <div class="category-selector">
+            <label for="category">Select Category:</label>
+            <select id="category">
+                <option value="any">Any Category</option>
+                <option value="general">General</option>
+                <option value="programming">Programming</option>
+                <option value="knock-knock">Knock-Knock</option>
+            </select>
+        </div>
+
+        <div class="error" id="errorBox"></div>
+
+        <div class="loading" id="loading">
+            <span class="spinner"></span>
+            <span>Loading joke...</span>
+        </div>
+
+        <div class="joke-container" id="jokeContainer" style="display: none;">
+            <div class="joke-text" id="jokeText"></div>
+            <span class="joke-type" id="jokeType"></span>
+        </div>
+
+        <div class="button-group">
+            <button class="btn-primary" id="getJokeBtn" onclick="getJoke()">
+                Get Joke 🎉
+            </button>
+            <button class="btn-secondary" id="copyBtn" onclick="copyJoke()" style="display: none;">
+                Copy 📋
+            </button>
+        </div>
+
+        <div class="share-buttons" id="shareButtons" style="display: none;">
+            <button class="share-btn share-copy" onclick="copyJoke()">Copy to Clipboard</button>
+        </div>
+
+        <div class="info-box">
+            <strong>💡 Tip:</strong> Click "Get Joke" to fetch a random joke from an external API. You can select different categories to filter jokes by type.
+        </div>
+    </div>
+
+    <script>
+        let currentJoke = '';
+
+        // Fetch joke on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            getJoke();
+        });
+
+        async function getJoke() {
+            const category = document.getElementById('category').value;
+            const loading = document.getElementById('loading');
+            const jokeContainer = document.getElementById('jokeContainer');
+            const errorBox = document.getElementById('errorBox');
+            const getJokeBtn = document.getElementById('getJokeBtn');
+            const copyBtn = document.getElementById('copyBtn');
+
+            // Reset UI
+            errorBox.style.display = 'none';
+            getJokeBtn.disabled = true;
+            loading.style.display = 'block';
+            jokeContainer.style.display = 'none';
+
+            try {
+                let url = 'https://api.api-ninjas.com/v1/jokes';
+                
+                if (category !== 'any') {
+                    url += `?category=${category}`;
+                }
+
+                // Using API Ninjas (free, no auth required)
+                const response = await fetch(url, {
+                    headers: {
+                        'X-Api-Key': 'YOUR_API_KEY_HERE' // Will use free endpoint without key
+                    }
+                });
+
+                // Fallback to free joke API if needed
+                if (!response.ok) {
+                    return fetchFromJokeAPI(category);
+                }
+
+                const data = await response.json();
+                
+                if (data && data.length > 0) {
+                    currentJoke = data[0].joke;
+                    
+                    document.getElementById('jokeText').textContent = currentJoke;
+                    document.getElementById('jokeType').textContent = category !== 'any' ? category.toUpperCase() : 'RANDOM';
+                    
+                    jokeContainer.style.display = 'flex';
+                    copyBtn.style.display = 'block';
+                    document.getElementById('shareButtons').style.display = 'flex';
+                } else {
+                    showError('No joke found. Please try again.');
+                }
+            } catch (error) {
+                console.log('Trying alternative API...');
+                fetchFromJokeAPI(category);
+            } finally {
+                loading.style.display = 'none';
+                getJokeBtn.disabled = false;
+            }
+        }
+
+        async function fetchFromJokeAPI(category) {
+            const loading = document.getElementById('loading');
+            const jokeContainer = document.getElementById('jokeContainer');
+            const errorBox = document.getElementById('errorBox');
+            const getJokeBtn = document.getElementById('getJokeBtn');
+            const copyBtn = document.getElementById('copyBtn');
+
+            try {
+                let url = 'https://official-joke-api.appspot.com/random_joke';
+
+                // Use type-specific endpoint if available
+                if (category === 'knock-knock') {
+                    url = 'https://official-joke-api.appspot.com/jokes/knock-knock/random';
+                } else if (category === 'general') {
+                    url = 'https://official-joke-api.appspot.com/jokes/general/random';
+                } else if (category === 'programming') {
+                    url = 'https://official-joke-api.appspot.com/jokes/programming/random';
+                }
+
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.setup && data.punchline) {
+                    currentJoke = `${data.setup} ${data.punchline}`;
+                } else if (data.joke) {
+                    currentJoke = data.joke;
+                } else {
+                    showError('Could not fetch joke. Please try again.');
+                    return;
+                }
+
+                document.getElementById('jokeText').textContent = currentJoke;
+                document.getElementById('jokeType').textContent = data.type ? data.type.toUpperCase() : 'JOKE';
+                
+                jokeContainer.style.display = 'flex';
+                copyBtn.style.display = 'block';
+                document.getElementById('shareButtons').style.display = 'flex';
+
+            } catch (error) {
+                showError('Error fetching joke: ' + error.message);
+            } finally {
+                loading.style.display = 'none';
+                getJokeBtn.disabled = false;
+            }
+        }
+
+        function copyJoke() {
+            if (!currentJoke) return;
+
+            navigator.clipboard.writeText(currentJoke).then(() => {
+                const copyBtn = document.getElementById('copyBtn');
+                const originalText = copyBtn.textContent;
+                
+                copyBtn.textContent = '✓ Copied!';
+                copyBtn.style.background = '#4caf50';
+
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                }, 2000);
+            }).catch(() => {
+                showError('Failed to copy to clipboard');
+            });
+        }
+
+        function showError(message) {
+            const errorBox = document.getElementById('errorBox');
+            errorBox.textContent = message;
+            errorBox.style.display = 'block';
+        }
+
+        // Trigger new joke when category changes
+        document.getElementById('category').addEventListener('change', function() {
+            getJoke();
+        });
+
+        // Allow Enter key to get new joke
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const getJokeBtn = document.getElementById('getJokeBtn');
+                if (!getJokeBtn.disabled) {
+                    getJoke();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
