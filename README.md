@@ -2,68 +2,154 @@
 
 **Educación Financiera en tu Bolsillo**
 
-Un simulador interactivo para calcular créditos con diferentes tasas de interés y plazos. ¡Perfecta herramienta educativa!
+Aplicación web para simular préstamos usando el sistema de amortización francés con IVA.
 
-## 🚀 Acceso Rápido
+## 🚀 Características
 
-👉 **[Abre el simulador aquí](https://natalianeziz-cmd.github.io/simulador-creditos/)**
+- ✅ Simulador de préstamos con sistema francés
+- ✅ Cálculo automático de cuotas con IVA (21%)
+- ✅ Tabla detallada mes a mes
+- ✅ Interfaz moderna y responsiva
+- ✅ Fácil de usar
 
-## 📱 Compartir por QR
+## 📋 Requisitos
 
-Genera un código QR con este enlace:
-```
-https://natalianeziz-cmd.github.io/simulador-creditos/
-```
+- Python 3.8 o superior
+- pip (gestor de paquetes de Python)
 
-Herramientas para generar QR:
-- [QR Code Generator](https://www.qr-code-generator.com/)
-- [QR Monkey](https://www.qrmonkey.com/)
+## 🔧 Instalación Local
 
-## ✨ Características
+### 1. Clonar el repositorio
 
-- ✅ **Cálculo de cuotas** - Sistema Francés y Alemán
-- ✅ **Tabla de amortización** - Visualización mes a mes
-- ✅ **Totalmente responsive** - Funciona en cualquier dispositivo
-- ✅ **Interfaz moderna** - Diseño atractivo y fácil de usar
-- ✅ **Educativo** - Excelente para enseñanza financiera
-
-## 📊 Cómo usar
-
-1. Ingresa el **monto del crédito** (mínimo $1,000)
-2. Ajusta la **tasa de interés anual** (0.5% - 36%)
-3. Define el **plazo** (3 meses a 30 años)
-4. Elige el **tipo de amortización**:
-   - **Cuota Fija**: Mismo pago cada mes
-   - **Cuota Decreciente**: Pago mayor al inicio
-5. Haz clic en **Calcular**
-6. Visualiza la tabla de amortización
-
-## ⚙️ Configuración de GitHub Pages
-
-**Para que el simulador sea accesible públicamente:**
-
-1. Ve a **Settings** → **Pages**
-2. En "Source", selecciona: **Deploy from a branch**
-3. Branch: **main**
-4. Folder: **/ (root)**
-5. Haz clic en **Save**
-
-Espera 1-2 minutos y tu sitio estará disponible en:
-```
-https://natalianeziz-cmd.github.io/simulador-creditos/
+```bash
+git clone https://github.com/natalianeziz-cmd/simulador-creditos.git
+cd simulador-creditos
 ```
 
-## 📝 Notas
+### 2. Crear entorno virtual
 
-- Los valores mostrados son **orientativos**
-- No incluye comisiones bancarias
-- Las tasas varían según la institución financiera
-- Úsalo como **herramienta educativa**
+```bash
+python -m venv venv
+```
 
-## 📧 Contacto
+### 3. Activar entorno virtual
 
-Para sugerencias o reportar errores, crea un [Issue](https://github.com/natalianeziz-cmd/simulador-creditos/issues)
+**En Windows:**
+```bash
+venv\Scripts\activate
+```
+
+**En Mac/Linux:**
+```bash
+source venv/bin/activate
+```
+
+### 4. Instalar dependencias
+
+```bash
+pip install -r requirements.txt
+```
+
+### 5. Ejecutar la aplicación
+
+```bash
+python app.py
+```
+
+### 6. Abrir en tu navegador
+
+Va a `http://localhost:5000` en tu navegador
+
+## 🌐 Despliegue Online (GRATIS)
+
+### Opción 1: Render (Recomendado)
+
+1. Ve a [render.com](https://render.com)
+2. Crea una cuenta gratuita
+3. Conecta tu repositorio de GitHub
+4. Selecciona "Web Service"
+5. Configura:
+   - **Build command:** `pip install -r requirements.txt`
+   - **Start command:** `gunicorn app:app`
+6. ¡Deploy!
+
+### Opción 2: Railway
+
+1. Ve a [railway.app](https://railway.app)
+2. Conecta tu GitHub
+3. Selecciona este repositorio
+4. ¡Deploy automático!
+
+### Opción 3: Heroku
+
+1. Crea archivo `Procfile` con:
+   ```
+   web: gunicorn app:app
+   ```
+2. Push a Heroku
+
+## 📊 Cómo funciona
+
+1. **Ingresa tus datos:**
+   - Monto del préstamo
+   - Tasa Nominal Anual (TNA)
+   - Plazo en meses
+
+2. **El sistema calcula:**
+   - Cuota mensual pura
+   - IVA sobre intereses
+   - Amortización
+   - Saldo pendiente
+
+3. **Visualiza:**
+   - Resumen de tu préstamo
+   - Tabla completa mes a mes
+   - Costo total del financiamiento
+
+## 📁 Estructura del Proyecto
+
+```
+simulador-creditos/
+├── app.py                 # Backend Flask
+├── requirements.txt       # Dependencias
+├── templates/
+│   └── index.html        # HTML principal
+└── static/
+    ├── style.css         # Estilos CSS
+    └── script.js         # JavaScript
+```
+
+## 💡 Ejemplo de Uso
+
+**Ingreso:**
+- Monto: $50,000
+- TNA: 53%
+- Plazo: 60 meses
+
+**Resultado:**
+- Cuota mensual: $1,234.56
+- Total a devolver: $74,073.60
+- Costo financiero: $24,073.60
+
+## 📱 Responsivo
+
+Funciona perfectamente en:
+- ✅ Computadoras
+- ✅ Tablets
+- ✅ Smartphones
+
+## 🤝 Contribuciones
+
+¡Las contribuciones son bienvenidas! Siéntete libre de abrir un issue o enviar un pull request.
+
+## 📄 Licencia
+
+MIT License - Libre para usar y modificar
+
+## 👩‍💻 Autor
+
+**Natalia** - [GitHub](https://github.com/natalianeziz-cmd)
 
 ---
 
-**Hecho con ❤️ para la educación financiera**
+**¡Esperamos que te sea útil para tu educación financiera!** 💰📚

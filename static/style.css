@@ -229,6 +229,7 @@ body {
 /* Table */
 .table-container {
     margin-top: 30px;
+    overflow-x: auto;
 }
 
 .table-container h3 {
